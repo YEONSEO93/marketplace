@@ -1,30 +1,55 @@
-import FormButton from "@/components/form-btn";
-import FormInput from "@/components/form-input";
+"use client";
+
+import Button from "@/components/button";
+import Input from "@/components/input";
 import SocialLogin from "@/components/social-login";
+import { useFormState } from "react-dom";
+import { createAccount } from "./actions";
+import { PASSWORD_MIN_LENGTH } from "@/lib/constants";
 
 export default function CreateAccount() {
+  const [state, dispatch] = useFormState(createAccount, null);
   return (
-    <div className="flex flex-col gap-10 py-28 px-6">
-      <div className="flex flex-col gap-2 *:font-medium">
-        <h1 className="text-2xl">Welcome to Bagel Marketplace 👋</h1>
-        <h2 className="text-l font-light text-gray-200">Fill in the form below to join!</h2>
+    <div className="flex flex-col gap-6 py-8 px-6">
+      <div className="flex flex-col items-center p-8 gap-10 *:font-medium">
+        <h1 className="text-9xl">🥯 </h1>
+        <h1 className="text-4xl">Bagel Marketplace</h1>
       </div>
-      <form className="flex flex-col gap-7">
-        <FormInput type="text" placeholder="Username" required errors={["username is too short"]} />
-        <FormInput type="email" placeholder="Email" required errors={[]} />
-        <FormInput
+
+      <form action={dispatch} className="flex flex-col gap-6">
+         <Input
+          name="username"
+          type="text"
+          placeholder="Username"
+          required
+          errors={state?.fieldErrors.username}
+          minLength={3}
+          maxLength={10}
+        />
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          required
+          errors={state?.fieldErrors.email}
+        />
+        <Input
+          name="password"
           type="password"
           placeholder="Password"
+          minLength={PASSWORD_MIN_LENGTH}
           required
-          errors={[]}
+          errors={state?.fieldErrors.password}
         />
-        <FormInput
+        <Input
+          name="confirm_password"
           type="password"
           placeholder="Confirm Password"
           required
-          errors={[]}
+          minLength={PASSWORD_MIN_LENGTH}
+          errors={state?.fieldErrors.confirm_password}
         />
-        <FormButton loading={false} text="Create account" />
+        <Button text="Create account" />
       </form>
       <SocialLogin />
     </div>
