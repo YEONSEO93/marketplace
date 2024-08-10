@@ -57,9 +57,9 @@ export default function ProductList({ initialProducts }: ProductListProps) {
           style={{
             marginTop: `${page + 1 * 900}vh`,
           }}
-          className="mb-96 text-sm font-semibold bg-violet-600 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
+          className="mb-96 text-sm font-semibold bg-teal-600 w-fit mx-auto px-3 py-2 rounded-md hover:opacity-90 active:scale-95"
         >
-          {isLoading ? "Loading" : "Load more"}
+          {isLoading ? "Loading..." : "Load more"}
         </span>
       ) : null}
     </div>

@@ -12,8 +12,8 @@ export default function Home() {
       <div className="flex flex-col items-center gap-3 w-full">
         <Link
           href="/create-account"
-          className="w-full bg-violet-700 text-white text-lg font-medium py-2.5 rounded-md text-center
-           hover:bg-violet-500 transition-colors"    >
+          className="w-full bg-teal-600 text-white text-lg font-medium py-2.5 rounded-md text-center
+           hover:bg-pink-600 transition-colors"    >
           Create Account
         </Link>
         <div className="flex gap-3">

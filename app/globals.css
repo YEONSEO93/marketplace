@@ -4,7 +4,7 @@
 
 @layer base {
     a {
-        @apply text-violet-300;
+        @apply text-teal-400;
     }
 }
 
@@ -16,6 +16,6 @@
 
 @layer components {
     .primary-btn {
-        @apply w-full bg-violet-700 text-white font-medium rounded-md text-center hover:bg-violet-400 transition-colors;
+        @apply w-full bg-teal-600 text-white font-medium rounded-md text-center hover:bg-pink-600 transition-colors;
     }
 }
