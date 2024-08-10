@@ -1,3 +1,4 @@
+
 export default function Life() {
   return (
     <div>
