@@ -1,3 +1,4 @@
+
 import ProductList from "@/components/product-list";
 import db from "@/lib/db";
 import { PlusIcon } from "@heroicons/react/24/solid";
@@ -32,7 +33,7 @@ export default async function Products() {
       <ProductList initialProducts={initialProducts} />
       <Link
         href="/products/add"
-        className="bg-teal-600 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors hover:bg-pink-600"
+        className="bg-teal-600 flex items-center justify-center rounded-full size-16 fixed bottom-24 right-8 text-white transition-colors"
       >
         <PlusIcon className="size-10" />
       </Link>

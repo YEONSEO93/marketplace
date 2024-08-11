@@ -38,7 +38,7 @@ export default function AddProduct() {
       setUploadUrl(uploadURL);
       setValue(
         "photo",
-        `https://imagedelivery.net/aSbksvJjax-AUC7qVnaC4A/${id}`
+        `https://imagedelivery.net/946t3Bn7epLNWC96BjzU3Q/${id}`
       );
     }
   };
@@ -68,7 +68,7 @@ export default function AddProduct() {
   console.log(register("title"));
   return (
     <div>
-      <form action={onValid} className="p-5 flex flex-col gap-5">
+      <form action={onValid} className="p-5 flex flex-col gap-3">
         <label
           htmlFor="photo"
           className="border-2 aspect-square flex items-center justify-center flex-col text-neutral-300 border-neutral-300 rounded-md border-dashed cursor-pointer bg-center bg-cover"
