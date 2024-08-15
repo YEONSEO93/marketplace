@@ -5,9 +5,9 @@ export default function SocialLogin() {
   return (
     <>
       <div className="w-full h-px bg-neutral-500" />
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-row gap-3">
         <Link
-          className="primary-btn flex h-10 items-center justify-center gap-2"
+          className="primary-btn rounded-full flex h-12 items-center justify-center gap-2"
           href="/github/start"
         >
           <svg
@@ -23,14 +23,14 @@ export default function SocialLogin() {
               clipRule="evenodd"
             ></path>
           </svg>
-          <span>Continue with Github</span>
+          <span>Github</span>
         </Link>
         <Link
-          className="primary-btn flex h-10 items-center justify-center gap-2"
+          className="primary-btn rounded-full flex h-12 items-center justify-center gap-2"
           href="/sms"
         >
           <ChatBubbleOvalLeftEllipsisIcon className="size-6" />
-          <span>Continue with SMS</span>
+          <span>SMS</span>
         </Link>
       </div>
     </>
