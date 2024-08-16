@@ -1,15 +1,15 @@
 "use server";
 
-import bcrypt from "bcrypt";
+import { z } from "zod";
 import {
-  PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX,
+  PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX_ERROR,
 } from "@/lib/constants";
 import db from "@/lib/db";
-import { z } from "zod";
-import getSession from "@/lib/session";
+import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { LogIn } from "@/lib/utils";
 
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
@@ -20,11 +20,6 @@ const checkEmailExists = async (email: string) => {
       id: true,
     },
   });
-  // if(user){
-  //   return true
-  // } else {
-  //   return false
-  // }
   return Boolean(user);
 };
 
@@ -33,15 +28,14 @@ const formSchema = z.object({
     .string()
     .email()
     .toLowerCase()
-    .refine(checkEmailExists, "An account with this email does not exist."),
-  password: z.string({
-    required_error: "Password is required",
-  }),
-  // .min(PASSWORD_MIN_LENGTH),
-  // .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+    .refine(checkEmailExists, "이 이메일로 가입된 계정이 없습니다."),
+  password: z
+    .string({ required_error: "비밀번호는 필수입니다." })
+    .min(PASSWORD_MIN_LENGTH)
+    .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
 });
 
-export async function logIn(prevState: any, formData: FormData) {
+export const login = async (prevState: any, formData: FormData) => {
   const data = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -64,17 +58,15 @@ export async function logIn(prevState: any, formData: FormData) {
       user!.password ?? "xxxx"
     );
     if (ok) {
-      const session = await getSession();
-      session.id = user!.id;
-      await session.save();
+      await LogIn(user!.id);
       redirect("/profile");
     } else {
       return {
         fieldErrors: {
-          password: ["Wrong password."],
+          password: ["비밀번호가 일치하지 않습니다."],
           email: [],
         },
       };
     }
   }
-}
+};

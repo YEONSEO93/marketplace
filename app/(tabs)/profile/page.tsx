@@ -5,6 +5,7 @@ import { Suspense } from "react";
 
 async function getUser() {
   const session = await getSession();
+
   if (session.id) {
     const user = await db.user.findUnique({
       where: {

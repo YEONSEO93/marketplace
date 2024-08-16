@@ -4,7 +4,7 @@
 
 @layer base {
     a {
-        @apply text-teal-400;
+        @apply text-[#FF6B6B];
     }
 }
 
@@ -16,6 +16,6 @@
 
 @layer components {
     .primary-btn {
-        @apply w-full h-12 bg-teal-600 text-white font-medium rounded-md text-center hover:bg-pink-600 transition-colors;
+        @apply w-full h-12 bg-[#FF6B6B] text-white font-bold rounded-full text-center hover:bg-[#4ECDC4] transition-colors;
     }
 }

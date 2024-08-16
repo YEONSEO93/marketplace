@@ -1,25 +1,27 @@
+
 "use server";
 
-import twilio from "twilio";
-import crypto from "crypto";
 import { z } from "zod";
 import validator from "validator";
 import { redirect } from "next/navigation";
 import db from "@/lib/db";
-import getSession from "@/lib/session";
+import crypto from "crypto";
+import { LogIn } from "@/lib/utils";
 
 const phoneSchema = z
   .string()
   .trim()
   .refine(
     (phone) => validator.isMobilePhone(phone, "ko-KR"),
-    "Wrong phone format"
+    "올바른 전화번호 형식으로 입력해 주세요."
   );
 
-async function tokenExists(token: number) {
+async function tokenExists({ token, phone }: { token: number; phone: string }) {
+  console.log(token, phone);
   const exists = await db.sMSToken.findUnique({
     where: {
       token: token.toString(),
+      phone,
     },
     select: {
       id: true,
@@ -28,17 +30,25 @@ async function tokenExists(token: number) {
   return Boolean(exists);
 }
 
-const tokenSchema = z.coerce
-  .number()
-  .min(100000)
-  .max(999999)
-  .refine(tokenExists, "This token does not exist.");
+const tokenSchema = z
+  .object({
+    token: z.coerce
+      .number({ required_error: "인증번호를 입력해 주세요." })
+      .min(100000, "올바른 인증번호 형식으로 입력해 주세요.")
+      .max(999999, "올바른 인증번호 형식으로 입력해 주세요."),
+    phone: z
+      .string()
+      .refine(validator.isMobilePhone, "전화번호 형식이 올바르지 않습니다."),
+  })
+  .refine(tokenExists, {
+    message: "존재하지 않는 토큰입니다.",
+    path: ["token"],
+  });
 
 interface ActionState {
   token: boolean;
+  phone: string;
 }
-
-10 * 10 * 10 * 10 * 10 * 10;
 
 async function getToken() {
   const token = crypto.randomInt(100000, 999999).toString();
@@ -51,20 +61,21 @@ async function getToken() {
     },
   });
   if (exists) {
-    return getToken();
+    return await getToken();
   } else {
     return token;
   }
 }
 
 export async function smsLogIn(prevState: ActionState, formData: FormData) {
-  const phone = formData.get("phone");
+  const phone = formData.get("phone") ?? prevState.phone;
   const token = formData.get("token");
   if (!prevState.token) {
     const result = phoneSchema.safeParse(phone);
     if (!result.success) {
       return {
         token: false,
+        phone,
         error: result.error.flatten(),
       };
     } else {
@@ -79,6 +90,7 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
       await db.sMSToken.create({
         data: {
           token,
+          phone: phone + "",
           user: {
             connectOrCreate: {
               where: {
@@ -92,39 +104,40 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
           },
         },
       });
-      const client = twilio(
-        process.env.TWILIO_ACCOUNT_SID,
-        process.env.TWILIO_AUTH_TOKEN
-      );
-      await client.messages.create({
-        body: `Your Karrot verification code is: ${token}`,
-        from: process.env.TWILIO_PHONE_NUMBER!,
-        to: process.env.MY_PHONE_NUMBER!,
-      });
+      // const client = twilio(
+      //   process.env.TWILIO_ACCOUNT_SID,
+      //   process.env.TWILIO_AUTH_TOKEN
+      // );
+      // await client.messages.create({
+      //   body: `당신의 당근 인증 코드는 ${token}입니다.`,
+      //   from: process.env.TWILIO_PHONE_NUMBER!,
+      //   to: process.env.MY_PHONE_NUMBER!,
+      // });
       return {
         token: true,
+        phone,
       };
     }
   } else {
-    const result = await tokenSchema.spa(token);
+    const result = await tokenSchema.spa({ token, phone });
     if (!result.success) {
       return {
-        token: true,
         error: result.error.flatten(),
+        phone,
+        token: true,
       };
     } else {
       const token = await db.sMSToken.findUnique({
         where: {
-          token: result.data.toString(),
+          phone: phone + "",
+          token: result.data.token + "",
         },
         select: {
           id: true,
           userId: true,
         },
       });
-      const session = await getSession();
-      session.id = token!.userId;
-      await session.save();
+      await LogIn(token!.userId);
       await db.sMSToken.delete({
         where: {
           id: token!.id,

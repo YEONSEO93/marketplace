@@ -1,3 +1,5 @@
+//app>products>add>page.tsx
+
 "use client";
 
 import Button from "@/components/button";
