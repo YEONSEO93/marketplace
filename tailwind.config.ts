@@ -6,8 +6,17 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  theme: {},
-    plugins: [],
-  // plugins: [require("daisyui")],
+  theme: {
+    extend: {
+      fontFamily: {
+        roboto: "var(--roboto-text)",
+        rubik: "var(--rubik-text)",
+      },
+      borderRadius: {
+        "super-small": "1px",
+      },
+    },
+  },
+  plugins: [require("@tailwindcss/forms")],
 };
 export default config;

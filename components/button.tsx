@@ -1,47 +1,21 @@
-
-// "use client";
-
-// import { useFormStatus } from "react-dom";
-
-// interface ButtonProps {
-//   text: string;
-//   className?: string; // Accept the className prop
-
-// }
-
-// export default function Button({ text }: ButtonProps) {
-//   const { pending } = useFormStatus();
-//   return (
-//     <button
-//       disabled={pending}
-//       className="primary-btn h-12 disabled:bg-neutral-400  disabled:text-neutral-300 disabled:cursor-not-allowed"
-//     >
-//       {pending ? "Loading..." : text}
-//     </button>
-//   );
-// }
-
-
-
-
 "use client";
 
 import { useFormStatus } from "react-dom";
 
-interface ButtonProps {
+interface IButtonProps {
   text: string;
-  className?: string; 
 }
 
-export default function Button({ text, className = "" }: ButtonProps) {
+const Button = ({ text }: IButtonProps) => {
   const { pending } = useFormStatus();
-  
   return (
     <button
       disabled={pending}
-      className={`primary-btn h-12 disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed ${className}`}
+      className="primary-btn h-10 font-semibold disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
     >
       {pending ? "Loading..." : text}
     </button>
   );
-}
+};
+
+export default Button;

@@ -3,13 +3,9 @@ import getSession from "./session";
 
 
 export const LogIn = async (id: number) => {
-  try {
-    const session: any = await getSession();
-    session.id = id;
-    await session.save();
-  } catch (error) {
-    console.error("Failed to log in:", error);
-  }
+  const session: any = await getSession();
+  session.id = id;
+  await session.save();
 };
 
 

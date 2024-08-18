@@ -11,6 +11,7 @@ import { z } from "zod";
 import { redirect } from "next/navigation";
 import { LogIn } from "@/lib/utils";
 
+// Function to check if password and confirm_password are the same
 const checkPassword = ({
   password,
   confirm_password,
@@ -19,54 +20,51 @@ const checkPassword = ({
   confirm_password: string;
 }) => password === confirm_password;
 
+// Schema validation using Zod
 const formSchema = z
   .object({
     username: z
       .string({
-        invalid_type_error: "이름은 문자열이 되어야 합니다.",
-        required_error: "이름은 필수 항목입니다.",
+        invalid_type_error: "Username must be a string.",
+        required_error: "Username is required.",
       })
       .trim(),
     email: z
       .string({
-        invalid_type_error: "이메일은 문자열이 되어야 합니다.",
-        required_error: "이메일은 필수 항목입니다.",
+        invalid_type_error: "Email must be a string.",
+        required_error: "Email is required.",
       })
       .email()
       .toLowerCase(),
     password: z
       .string({
-        invalid_type_error: "비밀번호는 문자열이 되어야 합니다.",
-        required_error: "비밀번호는 필수 항목입니다.",
+        invalid_type_error: "Password must be a string.",
+        required_error: "Password is required.",
       })
       .min(
         PASSWORD_MIN_LENGTH,
-        `비밀번호는 최소 ${PASSWORD_MIN_LENGTH}글자 이상 입력해 주세요.`
+        `Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`
       )
       .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
     confirm_password: z
       .string({
-        invalid_type_error: "확인 비밀번호는 문자열이 되어야 합니다.",
-        required_error: "확인 비밀번호는 필수 항목입니다.",
+        invalid_type_error: "Confirm password must be a string.",
+        required_error: "Confirm password is required.",
       })
       .min(
         PASSWORD_MIN_LENGTH,
-        `비밀번호는 최소 ${PASSWORD_MIN_LENGTH}글자 이상 입력해 주세요.`
+        `Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`
       ),
   })
   .superRefine(async ({ email }, ctx) => {
     const user = await db.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-      },
+      where: { email },
+      select: { id: true },
     });
     if (user) {
       ctx.addIssue({
         code: "custom",
-        message: "이미 사용 중인 이메일입니다.",
+        message: "Email is already in use.",
         path: ["email"],
         fatal: true,
       });
@@ -75,17 +73,13 @@ const formSchema = z
   })
   .superRefine(async ({ username }, ctx) => {
     const user = await db.user.findUnique({
-      where: {
-        username,
-      },
-      select: {
-        id: true,
-      },
+      where: { username },
+      select: { id: true },
     });
     if (user) {
       ctx.addIssue({
         code: "custom",
-        message: "이미 사용 중인 이름입니다.",
+        message: "Username is already in use.",
         path: ["username"],
         fatal: true,
       });
@@ -93,10 +87,11 @@ const formSchema = z
     }
   })
   .refine(checkPassword, {
-    message: "확인 비밀번호가 일치하지 않습니다.",
+    message: "Confirm password does not match.",
     path: ["confirm_password"],
   });
 
+// Function to create a new account
 export const createAccount = async (prevState: any, formData: FormData) => {
   const data = {
     username: formData.get("username"),
@@ -104,12 +99,14 @@ export const createAccount = async (prevState: any, formData: FormData) => {
     password: formData.get("password"),
     confirm_password: formData.get("confirm_password"),
   };
+  
   const result = await formSchema.spa(data);
+  
   if (!result.success) {
-    console.log(result.error.flatten());
     return result.error.flatten();
   } else {
     const hashedPassword = await bcrypt.hash(result.data.password, 12);
+    
     const user = await db.user.create({
       data: {
         username: result.data.username,
@@ -120,6 +117,7 @@ export const createAccount = async (prevState: any, formData: FormData) => {
         id: true,
       },
     });
+    
     await LogIn(user.id);
     redirect("/profile");
   }

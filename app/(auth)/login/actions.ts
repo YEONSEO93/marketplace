@@ -11,59 +11,57 @@ import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import { LogIn } from "@/lib/utils";
 
+// Function to check if the email exists in the database
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
-    where: {
-      email,
-    },
-    select: {
-      id: true,
-    },
+    where: { email },
+    select: { id: true },
   });
   return Boolean(user);
 };
 
+// Schema validation using Zod
 const formSchema = z.object({
   email: z
     .string()
-    .email()
+    .email("Please enter a valid email address.")
     .toLowerCase()
-    .refine(checkEmailExists, "이 이메일로 가입된 계정이 없습니다."),
+    .refine(checkEmailExists, "No account found with this email."),
   password: z
-    .string({ required_error: "비밀번호는 필수입니다." })
-    .min(PASSWORD_MIN_LENGTH)
+    .string({ required_error: "Password is required." })
+    .min(PASSWORD_MIN_LENGTH, `Password must be at least ${PASSWORD_MIN_LENGTH} characters long.`)
     .regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
 });
 
+// Function to handle user login
 export const login = async (prevState: any, formData: FormData) => {
   const data = {
     email: formData.get("email"),
     password: formData.get("password"),
   };
+  
   const result = await formSchema.spa(data);
+  
   if (!result.success) {
     return result.error.flatten();
   } else {
     const user = await db.user.findUnique({
-      where: {
-        email: result.data.email,
-      },
-      select: {
-        id: true,
-        password: true,
-      },
+      where: { email: result.data.email },
+      select: { id: true, password: true },
     });
+    
     const ok = await bcrypt.compare(
       result.data.password,
       user!.password ?? "xxxx"
     );
+    
     if (ok) {
       await LogIn(user!.id);
       redirect("/profile");
     } else {
       return {
         fieldErrors: {
-          password: ["비밀번호가 일치하지 않습니다."],
+          password: ["The password is incorrect."],
           email: [],
         },
       };

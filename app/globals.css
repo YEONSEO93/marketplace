@@ -3,19 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-    a {
-        @apply text-[#FF6B6B];
-    }
-}
-
-@layer utilities {
-    .text-bigger-hello {
-        @apply text-3xl font-semibold;
-    }
+  a {
+    @apply text-orange-500;
+  }
 }
 
 @layer components {
-    .primary-btn {
-        @apply w-full h-12 bg-[#FF6B6B] text-white font-bold rounded-full text-center hover:bg-[#4ECDC4] transition-colors;
-    }
+  .primary-btn {
+    @apply w-full bg-orange-500 text-white font-medium rounded-md text-center hover:bg-orange-400 transition-colors;
+  }
 }

@@ -1,7 +1,7 @@
 "use server";
 import getSession from "@/lib/session";
 import db from "../../../../lib/db";
-import { productSchema } from "../../../(tabs)/home/add/schema";
+import { productSchema } from "../../add/schema";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -24,7 +24,7 @@ export async function getProduct(id: number) {
 
 export async function deletePhoto(photoId: string) {
   await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/images/v1/${photoId}`,
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ID}/images/v1/${photoId}`,
     {
       method: "DELETE",
       headers: {

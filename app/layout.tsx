@@ -1,15 +1,27 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto, Rubik_Scribble } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+  variable: "--roboto-text",
+});
+
+const rubik = Rubik_Scribble({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal"],
+  variable: "--rubik-text",
+});
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | 🥯 Bagel Marketplace",
-    default: "🥯 Bagel Marketplace",
+    template: "%s | Bagel Marketplace",
+    default: "Bagel Marketplace",
   },
-  description: "Sell and buy all the things!",
+  description: "Here is everything you need.",
 };
 
 export default function RootLayout({
@@ -20,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-[#FFFBEA] text-[#333333] max-w-screen-sm mx-auto`}
+        className={`${roboto.variable} ${rubik.variable} bg-neutral-900 text-white max-w-md mx-auto`}
       >
         {children}
       </body>

@@ -1,49 +1,21 @@
-// 'use client';
+"use client";
 
-// import { XMarkIcon } from '@heroicons/react/24/solid';
-// import { useRouter } from 'next/navigation';
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useRouter } from "next/navigation";
 
-// export default function CloseButton() {
-//   const router = useRouter();
-//   const onCloseClick = () => {
-//     router.back();
-//   };
-
-//   return (
-//     <button
-//       onClick={onCloseClick}
-//       className='absolute top-4 right-8 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700 transition-colors'
-//     >
-//       <XMarkIcon className='h-6 w-6' />
-//     </button>
-//   );
-// }
-
-
-
-
-
-
-
-'use client';
-
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { useRouter } from 'next/navigation';
-
-export default function CloseButton() {
+const CloseButton = () => {
   const router = useRouter();
-
   const onCloseClick = () => {
     router.back();
   };
-
   return (
     <button
       onClick={onCloseClick}
-      className='absolute top-4 right-8 text-white bg-gray-800 rounded-full p-2 hover:bg-gray-700 transition-colors'
+      className="absolute right-5 top-5 text-neutral-200"
     >
-      <XMarkIcon className='h-6 w-6' />
+      <XMarkIcon className="size-10" />
     </button>
   );
-}
+};
 
+export default CloseButton;

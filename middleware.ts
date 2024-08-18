@@ -14,20 +14,20 @@ const publicOnlyUrls: Routes = {
   "/github/complete": true,
 };
 
-export async function middleware(request: NextRequest) {
+export async function middleware(req: NextRequest) {
   const session = await getSession();
-  const exists = publicOnlyUrls[request.nextUrl.pathname];
+  const exists = publicOnlyUrls[req.nextUrl.pathname];
   if (!session.id) {
     if (!exists) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
   } else {
     if (exists) {
-      return NextResponse.redirect(new URL("/home", request.url));
+      return NextResponse.redirect(new URL("/home", req.url));
     }
   }
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|github.svg).*)"],
 };

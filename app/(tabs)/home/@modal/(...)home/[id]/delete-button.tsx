@@ -1,32 +1,3 @@
-// "use client";
-
-// import { onDelete } from "./actions";
-// import { useState } from "react";
-
-// const DeleteButton = ({ id, isOwner }: { id: number; isOwner: boolean }) => {
-//   const [isLoading, setLoading] = useState(false);
-//   const onClick = async () => {
-//     const ok = window.confirm("상품을 삭제하시겠습니까?");
-//     if (!ok) return;
-//     setLoading(true);
-//     await onDelete(id, isOwner);
-//     setLoading(false);
-//     window.location.href = "/home";
-//   };
-//   return (
-//     <button
-//       onClick={onClick}
-//       type="button"
-//       className="bg-red-500 w-full h-10 rounded-md text-white font-semibold"
-//     >
-//       {isLoading ? "삭제하는 중.." : "삭제하기"}
-//     </button>
-//   );
-// };
-
-// export default DeleteButton;
-
-
 "use client";
 
 import { onDelete } from "./actions";
@@ -34,24 +5,19 @@ import { useState } from "react";
 
 const DeleteButton = ({ id, isOwner }: { id: number; isOwner: boolean }) => {
   const [isLoading, setLoading] = useState(false);
-  
   const onClick = async () => {
-    const ok = window.confirm("Do you really want to delete this product?");
+    const ok = window.confirm("Are you sure you want to delete this item?");
     if (!ok) return;
     setLoading(true);
     await onDelete(id, isOwner);
     setLoading(false);
     window.location.href = "/home";
   };
-  
   return (
     <button
       onClick={onClick}
       type="button"
-      className={`bg-red-500 w-full h-10 rounded-md text-white font-semibold ${
-        isLoading ? "opacity-70 cursor-not-allowed" : ""
-      }`}
-      disabled={isLoading}
+      className="bg-red-500 w-full h-10 rounded-md text-white font-semibold"
     >
       {isLoading ? "Deleting..." : "Delete"}
     </button>

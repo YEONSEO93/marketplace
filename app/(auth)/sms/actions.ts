@@ -1,4 +1,3 @@
-
 "use server";
 
 import { z } from "zod";
@@ -8,16 +7,17 @@ import db from "@/lib/db";
 import crypto from "crypto";
 import { LogIn } from "@/lib/utils";
 
+// Schema to validate the phone number format
 const phoneSchema = z
   .string()
   .trim()
   .refine(
     (phone) => validator.isMobilePhone(phone, "ko-KR"),
-    "올바른 전화번호 형식으로 입력해 주세요."
+    "Please enter a valid phone number."
   );
 
+// Function to check if the token exists for the provided phone number
 async function tokenExists({ token, phone }: { token: number; phone: string }) {
-  console.log(token, phone);
   const exists = await db.sMSToken.findUnique({
     where: {
       token: token.toString(),
@@ -30,18 +30,19 @@ async function tokenExists({ token, phone }: { token: number; phone: string }) {
   return Boolean(exists);
 }
 
+// Schema to validate the token
 const tokenSchema = z
   .object({
     token: z.coerce
-      .number({ required_error: "인증번호를 입력해 주세요." })
-      .min(100000, "올바른 인증번호 형식으로 입력해 주세요.")
-      .max(999999, "올바른 인증번호 형식으로 입력해 주세요."),
+      .number({ required_error: "Please enter the verification code." })
+      .min(100000, "Please enter a valid verification code.")
+      .max(999999, "Please enter a valid verification code."),
     phone: z
       .string()
-      .refine(validator.isMobilePhone, "전화번호 형식이 올바르지 않습니다."),
+      .refine(validator.isMobilePhone, "Invalid phone number format."),
   })
   .refine(tokenExists, {
-    message: "존재하지 않는 토큰입니다.",
+    message: "The verification code does not exist.",
     path: ["token"],
   });
 
@@ -50,15 +51,12 @@ interface ActionState {
   phone: string;
 }
 
+// Function to generate a unique token
 async function getToken() {
   const token = crypto.randomInt(100000, 999999).toString();
   const exists = await db.sMSToken.findUnique({
-    where: {
-      token,
-    },
-    select: {
-      id: true,
-    },
+    where: { token },
+    select: { id: true },
   });
   if (exists) {
     return await getToken();
@@ -67,11 +65,14 @@ async function getToken() {
   }
 }
 
+// Main function to handle SMS login
 export async function smsLogIn(prevState: ActionState, formData: FormData) {
   const phone = formData.get("phone") ?? prevState.phone;
   const token = formData.get("token");
+  
   if (!prevState.token) {
     const result = phoneSchema.safeParse(phone);
+    
     if (!result.success) {
       return {
         token: false,
@@ -86,6 +87,7 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
           },
         },
       });
+      
       const token = await getToken();
       await db.sMSToken.create({
         data: {
@@ -104,15 +106,18 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
           },
         },
       });
+
+      // Placeholder for sending SMS, uncomment and configure with Twilio or other SMS API
       // const client = twilio(
       //   process.env.TWILIO_ACCOUNT_SID,
       //   process.env.TWILIO_AUTH_TOKEN
       // );
       // await client.messages.create({
-      //   body: `당신의 당근 인증 코드는 ${token}입니다.`,
+      //   body: `Your verification code is ${token}.`,
       //   from: process.env.TWILIO_PHONE_NUMBER!,
-      //   to: process.env.MY_PHONE_NUMBER!,
+      //   to: phone,
       // });
+      
       return {
         token: true,
         phone,
@@ -120,6 +125,7 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
     }
   } else {
     const result = await tokenSchema.spa({ token, phone });
+    
     if (!result.success) {
       return {
         error: result.error.flatten(),
@@ -137,11 +143,10 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
           userId: true,
         },
       });
+      
       await LogIn(token!.userId);
       await db.sMSToken.delete({
-        where: {
-          id: token!.id,
-        },
+        where: { id: token!.id },
       });
       redirect("/profile");
     }
