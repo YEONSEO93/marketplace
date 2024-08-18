@@ -117,6 +117,13 @@
 // export default ChatRoom;
 
 
+
+
+
+
+
+
+
 import ChatMessagesList from "@/components/chat-messages-list";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
@@ -147,7 +154,7 @@ async function getRoom(id: string) {
           id: true,
         },
       },
-      product: true,  // Ensure product is included
+      product: true,  
     },
   });
   if (room) {
@@ -241,3 +248,5 @@ const ChatRoom = async ({ params }: { params: { id: string } }) => {
 };
 
 export default ChatRoom;
+
+

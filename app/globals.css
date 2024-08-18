@@ -4,12 +4,16 @@
 
 @layer base {
   a {
-    @apply text-orange-500;
+    @apply text-indigo-200 hover:text-indigo-800;
   }
 }
 
 @layer components {
   .primary-btn {
-    @apply w-full bg-orange-500 text-white font-medium rounded-md text-center hover:bg-orange-400 transition-colors;
+    @apply w-full bg-indigo-600 text-white font-semibold rounded-lg text-center hover:bg-indigo-800 transition-colors;
+  }
+
+  .input-field {
+    @apply bg-gray-100 rounded-lg w-full h-12 focus:outline-none ring-1 focus:ring-4 transition ring-neutral-300 focus:ring-indigo-500 border-none placeholder:text-neutral-500 px-4;
   }
 }

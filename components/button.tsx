@@ -11,7 +11,7 @@ const Button = ({ text }: IButtonProps) => {
   return (
     <button
       disabled={pending}
-      className="primary-btn h-10 font-semibold disabled:bg-neutral-400 disabled:text-neutral-300 disabled:cursor-not-allowed"
+      className="primary-btn h-12 font-medium disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
     >
       {pending ? "Loading..." : text}
     </button>
