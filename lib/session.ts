@@ -17,3 +17,4 @@ export default async function getSession(isPlain?: boolean) {
   }
   return session;
 }
+

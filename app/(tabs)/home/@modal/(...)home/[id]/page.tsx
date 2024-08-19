@@ -234,3 +234,4 @@ const Modal = async ({ params }: { params: { id: string } }) => {
 };
 
 export default Modal;
+

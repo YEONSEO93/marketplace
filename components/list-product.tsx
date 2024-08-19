@@ -86,7 +86,7 @@ const ListProduct = ({
           {title}
         </span>
         <span className="text-xl font-semibold text-indigo-600">
-          {formatToAUD(price)}AUD
+          {formatToAUD(price)}
         </span>
         <span className="text-sm text-gray-500">
           {formatToTimeAgo(created_at + "")}

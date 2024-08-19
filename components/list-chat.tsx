@@ -22,7 +22,7 @@ interface IListChatProps {
 
 const ListChat = ({ id, users, messages, userId }: IListChatProps) => {
   const user = users[0];
-  if (!user) return null; // It's a good practice to return null for conditional rendering in React components.
+  if (!user) return;
   const message = messages[0];
   return (
     <Link
@@ -50,7 +50,7 @@ const ListChat = ({ id, users, messages, userId }: IListChatProps) => {
           <>
             <h3 className="text-sm text-neutral-500">
               <span className="text-neutral-400">
-                {message.userId === userId ? "Me" : user.username}:
+                {message.userId === userId ? "나" : user.username}:
               </span>{" "}
               {message.payload}
             </h3>
@@ -65,4 +65,3 @@ const ListChat = ({ id, users, messages, userId }: IListChatProps) => {
 };
 
 export default ListChat;
-
