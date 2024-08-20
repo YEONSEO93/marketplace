@@ -397,6 +397,7 @@
 // export default ChatMessagesList;
 
 
+"use client";
 
 import React, { useState } from "react";
 import { saveMessage } from "@/app/chats/[id]/actions";
